@@ -1,0 +1,2687 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Shrink the whole Desk UI ~10%. `zoom` was tried first but Frappe measures
+   some container heights in JS off the real (unzoomed) window size, which
+   left a blank gap where the shrunk page no longer filled the viewport.
+   Scaling the actual font-size/spacing values instead keeps layout math
+   (100vh, flex fill, etc.) correct because nothing is post-scaled visually. */
+html {
+    font-size: 14.4px; /* 90% of Frappe's 16px root, cascades to all rem-based sizing */
+}
+
+/* Bump Frappe's base font-size scale for the whole Desk, then scale that
+   down ~10% again per the compact-mode request. This file loads last in
+   app_include_css, so it wins over Frappe's own :root declaration. */
+:root {
+    --text-tiny: 10.8px;
+    --text-xs: 11.7px;
+    --text-sm: 12.6px;
+    --text-md: 12.6px;
+    --text-base: 13.5px;
+    --text-lg: 15.3px;
+    --text-xl: 17.1px;
+
+    /* Frappe's own hardcoded px paddings/heights, scaled ~10% smaller */
+    --input-padding: 5.4px 7.2px;
+    --dropdown-padding: 3.6px 7.2px;
+    --grid-padding: 9px 7.2px;
+    --disabled-input-padding: 2.7px 7.2px;
+    --number-card-padding: 7.2px 7.2px 7.2px 10.8px;
+    --navbar-height: 43.2px;
+}
+
+/* --- CUSTOM MENU ITEM STYLES --- */
+.page-container {
+    background: var(--np-bg) !important;
+}
+
+.arjun-nav-group {
+    margin-bottom: 24px;
+}
+
+.arjun-nav-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    font-weight: 700;
+    padding: 0 24px;
+    margin-bottom: 12px;
+}
+
+.arjun-nav-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 24px;
+    color: var(--text-primary);
+    text-decoration: none !important;
+    font-weight: 500;
+    transition: var(--transition-fast);
+    cursor: pointer;
+    border-left: 3px solid transparent;
+}
+
+.arjun-nav-item i {
+    width: 20px;
+    text-align: center;
+    margin-right: 12px;
+    font-size: 16px;
+    color: var(--text-secondary);
+    transition: var(--transition-fast);
+}
+
+.arjun-nav-item:hover {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+}
+
+.arjun-nav-item:hover i {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.arjun-nav-item.active {
+    background-color: rgba(32, 178, 170, 0.1);
+    /* Primary color w/ opacity */
+    color: var(--primary-color);
+    border-left-color: var(--primary-color);
+}
+
+.arjun-nav-item.active i {
+    color: var(--primary-color);
+}
+
+/* --- END CUSTOM NAV OVERRIDES --- */
+
+
+:root {
+    /* KI Admin Base Palette (Isolated with --ki- prefix to prevent Frappe UI breaks) */
+    --ki-primary: 15, 98, 106;
+    --ki-secondary: 98, 98, 98;
+    --ki-success: 10, 185, 100;
+    --ki-danger: 225, 78, 90;
+    --ki-warning: 249, 193, 35;
+    --ki-info: 65, 150, 250;
+    --ki-light: 200, 185, 210;
+    --ki-dark: 40, 35, 45;
+    --ki-white: 255, 255, 255;
+
+    /* Frappe Native Primary Variables */
+    --primary: #0f626a;
+    --danger: #e14e5a;
+    /* ponytail: ki_style sets --danger to bare RGB components; Frappe expects a color */
+    --np-bg: #f5fbfb;
+    --font-color: #082f32;
+    --body-color: #f5fbfb;
+    --bodybg-color: #f6f7fa;
+    --font-light-color: #a0a0b0;
+    --grid_color: rgba(144, 164, 246, 0.21);
+    --border_color: rgba(0, 0, 0, 0.21);
+    --black: 0, 0, 0;
+    --border_color: #ebedf0;
+    --bs-dropdown-link-active-color: rgba(var(--ki-primary), 1);
+    --bs-dropdown-link-active-bg: rgba(var(--ki-primary), 0.2);
+
+    /* Variables mapped for Frappe widgets */
+    --primary-color: var(--primary);
+    --primary-hover: #0c4e55;
+    --bg-color: var(--bodybg-color);
+    --surface-color: #ffffff;
+    --text-primary: var(--font-color);
+    --text-secondary: var(--font-light-color);
+    --border-color-frappe: var(--border_color);
+
+    --box-shadow: 0 .1rem 0.5rem 0 rgba(var(--dark), .10);
+    --hover-shadow: 0 0.5rem 2rem var(--light-gray);
+    --app-transition: all 0.3s ease;
+    --light-gray: #f4f7f8;
+
+    /* UI Elements */
+    --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+    --glass-shadow: var(--box-shadow);
+    --backdrop-blur: blur(12px);
+
+    /* Layout */
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --radius-sm: 4px;
+    --transition-fast: var(--app-transition);
+}
+
+/* Global Typography Override */
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    background-color: var(--bg-color) !important;
+    color: var(--text-primary) !important;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- GLOBAL SYSTEM INPUT TWEAKS (KI-ADMIN BASE INPUT STYLE) --- */
+.form-control:not([type="checkbox"]):not([type="radio"]):not(#navbar-search):not(.input-xs),
+.input-with-feedback:not([type="checkbox"]):not([type="radio"]):not(.input-xs),
+.frappe-control input:not([type="checkbox"]):not([type="radio"]):not(.input-xs),
+.frappe-control select:not(.input-xs),
+.frappe-control textarea,
+.awesomplete>input:not(#navbar-search):not(.input-xs) {
+    background-color: #ffffff !important;
+    border: 1px solid #dcdfe3 !important;
+    border-radius: 6px !important;
+    color: #3b3f5c !important;
+    padding: 8px 14px !important;
+    font-size: 14px !important;
+    min-height: 40px !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease-in-out !important;
+    line-height: 1.5 !important;
+}
+
+/* Fix select vertical alignment */
+.frappe-control select:not(.input-xs),
+select.form-control:not(.input-xs),
+select.input-with-feedback:not(.input-xs) {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    height: 40px !important;
+    line-height: normal !important;
+}
+
+/* Hover effect */
+.form-control:not([type="checkbox"]):not([type="radio"]):hover,
+.input-with-feedback:not([type="checkbox"]):not([type="radio"]):hover,
+.frappe-control input:not([type="checkbox"]):not([type="radio"]):hover,
+.frappe-control select:hover,
+.awesomplete>input:hover {
+    border-color: #b0b9c4 !important;
+}
+
+/* Focus effect (Teal Highlight) */
+.form-control:not([type="checkbox"]):not([type="radio"]):focus,
+.input-with-feedback:not([type="checkbox"]):not([type="radio"]):focus,
+.frappe-control input:not([type="checkbox"]):not([type="radio"]):focus,
+.frappe-control select:focus,
+.frappe-control textarea:focus,
+.awesomplete>input:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(15, 98, 106, 0.15) !important;
+    background-color: #ffffff !important;
+    outline: none !important;
+}
+
+/* Autocomplete/link-field suggestion dropdown: clearly highlight the
+   hovered option instead of Frappe's default barely-visible --control-bg
+   tint. Frappe renders these as <li> for plain Select/Autocomplete fields
+   and as <div role="option"> for Link fields (server-side search results)
+   - both need covering.
+
+   aria-selected="true" marks whichever item Enter would pick right now
+   (defaults to the first item, moves with arrow keys) - it's independent
+   of mouse hover, so it gets its own lighter tint. Giving it the same
+   solid fill as :hover made two items look highlighted at once whenever
+   you moused over anything other than the first item. */
+.awesomplete>[role="listbox"]>li[aria-selected="true"],
+.awesomplete>[role="listbox"]>[role="option"][aria-selected="true"] {
+    background-color: rgba(15, 98, 106, 0.12) !important;
+    color: #0f626a !important;
+}
+
+.awesomplete>[role="listbox"]>li:hover,
+.awesomplete>[role="listbox"]>[role="option"]:hover {
+    background-color: #0f626a !important;
+    color: #ffffff !important;
+}
+
+.awesomplete>[role="listbox"]>li:hover .link-option,
+.awesomplete>[role="listbox"]>[role="option"]:hover .link-option,
+.awesomplete>[role="listbox"]>[role="option"]:hover .text-muted {
+    color: #ffffff !important;
+}
+
+/* Navbar "awesome bar" search results (Ctrl+K style dropdown) render each
+   item as an <a> inside the <li> - ki_style.css's global `a { color: ... }`
+   rule targets the anchor directly, which always wins over an inherited
+   color from the hovered <li> regardless of that rule's specificity. Has
+   to be overridden on the <a> (and its child spans) explicitly. */
+.awesomplete>[role="listbox"]>li:hover a,
+.awesomplete>[role="listbox"]>li:hover a span {
+    color: #ffffff !important;
+}
+
+/* Disabled / Read-Only Fields (KI-Admin Base Style) */
+.form-control:not([type="checkbox"]):not([type="radio"]):disabled,
+.form-control:not([type="checkbox"]):not([type="radio"])[readonly],
+.input-with-feedback:not([type="checkbox"]):not([type="radio"]):disabled,
+.input-with-feedback:not([type="checkbox"]):not([type="radio"])[readonly],
+.frappe-control input:not([type="checkbox"]):not([type="radio"]):disabled,
+.frappe-control input:not([type="checkbox"]):not([type="radio"])[readonly],
+.frappe-control select:disabled,
+.frappe-control textarea:disabled,
+.control-value.like-disabled-input {
+    background-color: #f8f9fa !important;
+    border: 1px solid #dcdfe3 !important;
+    border-radius: 6px !important;
+    color: #495057 !important;
+    padding: 8px 14px !important;
+    font-size: 14px !important;
+    min-height: 40px !important;
+    box-shadow: none !important;
+    cursor: default !important;
+    font-weight: 500 !important;
+}
+
+.control-value.like-disabled-input {
+    width: 100% !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+}
+
+
+/* Fix checkbox and radios mapping */
+.frappe-control input[type="checkbox"],
+.frappe-control input[type="radio"] {
+    min-height: auto !important;
+    cursor: pointer;
+}
+
+/* Grid / compact inputs: keep Frappe input-xs sizing */
+.form-control.input-xs,
+.frappe-control input.input-xs,
+select.input-xs {
+    min-height: 26px !important;
+    height: 26px !important;
+    padding: 3px 7px !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+}
+
+/* Prevent layout jumping on Homepage only */
+body.arjun-theme-active[data-route="Workspaces"] .layout-side-section,
+body.arjun-theme-active[data-route="Workspaces"] .sidebar-toggle-btn,
+body.arjun-theme-active[data-route^="Workspaces/"] .layout-side-section,
+body.arjun-theme-active[data-route^="Workspaces/"] .sidebar-toggle-btn,
+body.arjun-theme-active[data-route=""] .layout-side-section,
+body.arjun-theme-active[data-route=""] .sidebar-toggle-btn {
+    display: none !important;
+}
+
+/* Style Frappe Native Navbar instead of hiding it */
+body.arjun-theme-active .sticky-top .navbar {
+    background-color: #10225F !important;
+    backdrop-filter: var(--backdrop-blur);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+    padding: 12px 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Navy navbar text/icons */
+body.arjun-theme-active .sticky-top .navbar .header-toggle,
+body.arjun-theme-active .sticky-top .navbar #navbar-breadcrumbs,
+body.arjun-theme-active .sticky-top .navbar #navbar-breadcrumbs a,
+body.arjun-theme-active .sticky-top .navbar #navbar-breadcrumbs li,
+body.arjun-theme-active .sticky-top .navbar .nav-link,
+body.arjun-theme-active .sticky-top .navbar .nav-link span {
+    color: #ffffff !important;
+}
+
+body.arjun-theme-active .sticky-top .navbar .header-toggle iconify-icon,
+body.arjun-theme-active .sticky-top .navbar .nav-link svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+body.arjun-theme-active .sticky-top .navbar .vertical-bar {
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Help dropdown in the navbar - not needed for this company. Frappe always
+   renders this <li> unconditionally (its Navbar Settings doctype only
+   controls the menu's contents, not whether the button itself shows), so
+   removing it has to happen here. */
+body.arjun-theme-active .sticky-top .navbar .dropdown-help {
+    display: none !important;
+}
+
+/* Frappe's default breadcrumb separator (#navbar-breadcrumbs a::before) is a
+   fixed dark-stroke SVG (stroke='%231F272E'), baked in as the ::before
+   content rather than currentColor - invisible against our dark navy
+   navbar. Same arrow, white stroke. */
+body.arjun-theme-active .sticky-top .navbar #navbar-breadcrumbs a::before {
+    content: url("data:image/svg+xml;utf8,<svg width='6' height='8' viewBox='0 0 6 8' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1.25 7.5L4.75 4L1.25 0.5' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round'/></svg>") !important;
+}
+
+body.arjun-theme-active .sticky-top .navbar .search-bar,
+body.arjun-theme-active .sticky-top .navbar #navbar-search {
+    background-color: #ffffff !important;
+    color: #1F2937 !important;
+}
+
+body.arjun-theme-active .sticky-top .navbar .search-icon svg {
+    color: #1F2937 !important;
+    stroke: #1F2937 !important;
+}
+
+/* Navbar search: global input styles strip icon padding */
+.search-bar {
+    position: relative;
+}
+
+.search-bar .search-icon {
+    position: absolute;
+    left: 12px;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0;
+    display: flex;
+    align-items: center;
+    height: auto;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.search-bar .awesomplete {
+    width: 100%;
+}
+
+.search-bar .awesomplete > input#navbar-search,
+.search-bar #navbar-search.form-control {
+    width: 100% !important;
+    padding: 8px 14px 8px 36px !important;
+    min-height: 40px !important;
+}
+
+/* Hide Frappe's native application logo in the navbar */
+body.arjun-theme-active .sticky-top .navbar-brand.navbar-home {
+    display: none !important;
+}
+
+/* Hide the custom empty header since we are styling the native one */
+body.arjun-theme-active .header-main {
+    display: none !important;
+}
+
+/* Force container fluid if JS hasn't swapped the class yet */
+body.arjun-theme-active .container {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* App Wrapper based on KI Admin */
+.app-wrapper {
+    display: flex;
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+}
+
+/* Ensure sidebar sits above native sticky navbars */
+nav.vertical-sidebar {
+    z-index: 1030 !important;
+}
+
+/* Om Logistics truck parked at the bottom of the expanded sidebar. Hidden
+   while the sidebar is collapsed to its icon strip. */
+nav.vertical-sidebar::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 29px;
+    height: 42px;
+    pointer-events: none;
+    background: url("/assets/arjun_theme/images/om_truck.png") no-repeat center / contain;
+}
+nav.vertical-sidebar.semi-nav:not(:hover)::after {
+    display: none;
+}
+/* Road + town scenery behind the truck. The layers scroll left together so
+   the parked truck looks like it is driving right. The scenery tile is
+   7776px = 216 dash periods of 36px, so one 64.8s cycle (7776px) loops both
+   seamlessly at the same 120px/s. The scenery image is followed by its own
+   mirror image so the tile edges match and nothing is cut off at the seam. */
+nav.vertical-sidebar::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 12px;
+    height: 112px;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, #fff 18px, transparent 18px) 0 calc(100% - 8px) / 36px 3px repeat-x,
+        linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)) 0 calc(100% - 18px) / 100% 1px no-repeat,
+        linear-gradient(#0c0d10, #0c0d10) 0 100% / 100% 18px no-repeat,
+        url("/assets/arjun_theme/images/om_scenery_loop.png") 0 calc(100% - 18px) / 7776px 91px repeat-x;
+    /* Own compositor layer + a whole 2px per frame at 60fps (120px/s), and
+       the image pre-scaled to its display size, so there is no sub-pixel
+       shimmer or per-frame resampling. */
+    will-change: background-position;
+    transform: translateZ(0);
+    animation: arjun-road-move 64.8s linear infinite;
+}
+@keyframes arjun-road-move {
+    from { background-position: 0 calc(100% - 8px), 0 calc(100% - 18px), 0 100%, 0 calc(100% - 18px); }
+    to   { background-position: -7776px calc(100% - 8px), 0 calc(100% - 18px), 0 100%, -7776px calc(100% - 18px); }
+}
+nav.vertical-sidebar.semi-nav:not(:hover)::before {
+    display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+    nav.vertical-sidebar::before { animation: none; }
+}
+
+/* Grid row editor: center in content area, not under sidebar */
+body.arjun-theme-active {
+    --sidebar-width: 14rem;
+    --semi-nav: 4rem;
+    --sidebar-offset: var(--sidebar-width);
+}
+
+body.arjun-theme-active:has(nav.vertical-sidebar.semi-nav:not(:hover)) {
+    --sidebar-offset: var(--semi-nav, 5rem);
+}
+
+body.arjun-theme-active #freeze.grid-form {
+    z-index: 1035;
+}
+
+/* Raising the freeze overlay above the sidebar (previous rule) pushed it
+   above the grid row-edit panel too (Frappe's own default z-index: 1021),
+   since that default only ever needed to clear the freeze overlay's
+   original z-index: 1020 - not this theme's raised one. Panel needs to
+   stay on top of its own freeze overlay, or the whole row-edit form
+   renders as a flat grey wash with no visible white card underneath it. */
+body.arjun-theme-active .grid-row-open .form-in-grid {
+    z-index: 1036;
+}
+
+.app-wrapper .app-content {
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 0 40px var(--sidebar-width);
+    transition: var(--app-transition);
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Application Header overrides */
+.header-main {
+    background-color: var(--surface-color);
+    backdrop-filter: var(--backdrop-blur);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+
+nav .app-logo {
+    align-items: center;
+    border-bottom: 1px dashed var(--border_color);
+    display: flex;
+    /* Matches .navbar's own (separately hardcoded, not variable-driven)
+       height: 48px, so the horizontal line between the logo tile and the
+       sidebar below it lines up with the line between the navbar and the
+       page content next to it, instead of sitting 8px lower. */
+    height: 48px;
+    padding: 0 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+nav.vertical-sidebar .app-logo .logo {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 0 !important;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+nav.vertical-sidebar .app-logo .logo img {
+    display: block;
+    max-width: 100% !important;
+    width: auto !important;
+    max-height: 36px !important;
+    height: auto !important;
+    object-fit: contain !important;
+    object-position: left center;
+    float: none !important;
+}
+
+/* ki_style.css hardcodes .app-wrapper .semi-nav .app-logo to a fixed 80px,
+   which doesn't match the collapsed sidebar's actual width (--semi-nav,
+   4rem here). The logo tile then overflows past the sidebar's right edge -
+   tying it to the same variable keeps them in sync at any root font-size.
+   :not(:hover) - ki_style.css already expands .semi-nav:hover .app-logo
+   back to width:100% when the sidebar hover-expands, but our !important
+   here was overriding that (non-important) rule regardless of hover,
+   leaving the logo tile stuck at the collapsed width the whole time. */
+.app-wrapper .semi-nav:not(:hover) .app-logo {
+    width: var(--semi-nav) !important;
+    padding: 0 6px !important;
+}
+
+/* At 4rem (~51px) collapsed width minus padding, ~39px of content room is
+   left - the previous 48x40px cap left the image wider than that, so it
+   overflowed the tile and got clipped by .app-logo's overflow:hidden.
+   Shrink and center it so the mark renders fully inside the collapsed rail.
+   Same :not(:hover) reasoning as above - only while genuinely collapsed. */
+nav.vertical-sidebar.semi-nav:not(:hover) .app-logo .logo {
+    /* the .d-inline-block utility class on this same link sets
+       display:inline-block !important, which silently drops the
+       flex/justify-content centering below it - reassert flex here
+       so justify-content actually takes effect. */
+    display: flex !important;
+    justify-content: center;
+}
+
+/* The collapsed rail is only ~30px wide - shrinking the full wide "one"
+   wordmark (144x42, see om_logo.svg) via object-fit:contain into that
+   square left it a thin sliver with mostly empty space above/below it.
+   arjun_theme.js's inject_sidebar_collapsed_logo() adds a second <img>
+   right next to the original, pointing at a dedicated square icon-only
+   mark cropped straight out of om_logo.svg's own vector path (see
+   images/om_icon_mark.svg - full vector quality, not an upscaled raster).
+   CSS just swaps which of the two is visible, driven by the same
+   semi-nav/:hover state every other collapsed-sidebar rule here uses. */
+nav.vertical-sidebar.semi-nav:not(:hover) .app-logo .logo img:not(.arjun-collapsed-logo-icon) {
+    display: none !important;
+}
+
+/* !important is required here, not just belt-and-braces: the base rule
+   "nav.vertical-sidebar .app-logo .logo img" (line ~495) has no
+   semi-nav/hover condition and a higher-specificity selector (3 classes +
+   1 element vs. this rule's 1 class), so its non-important "display:
+   block" was winning and showing both logos stacked even while expanded. */
+.arjun-collapsed-logo-icon {
+    display: none !important;
+}
+
+nav.vertical-sidebar.semi-nav:not(:hover) .app-logo .logo .arjun-collapsed-logo-icon {
+    display: block !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 auto;
+    object-position: center;
+}
+
+nav .app-logo .app-logo-initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+nav .app-nav {
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+}
+
+nav .app-nav .main-nav {
+    list-style: none;
+    margin: 0;
+}
+
+nav .app-nav .menu-title span {
+    color: var(--font-light-color);
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    margin-bottom: 2px;
+    padding-bottom: 6px;
+    padding-top: 12px;
+    text-transform: uppercase;
+}
+
+nav .app-nav .main-nav>li {
+    padding: 0 0.5rem;
+}
+
+nav .app-nav .main-nav>li>a,
+nav .app-nav .main-nav>li:not(.menu-title)>a {
+    border-radius: 5px;
+    color: var(--font-color);
+    display: block !important;
+    font-size: 15px !important;
+    font-weight: 500;
+    margin-bottom: 2px;
+    padding: 7px 10px !important;
+    text-transform: capitalize;
+    transition: var(--app-transition);
+    white-space: nowrap;
+    text-decoration: none;
+    /* ki_style.css puts position:relative on the <li>, not the <a>. Once a
+       workspace expands, its <li> grows to contain the whole child list, so
+       the chevron's absolutely-positioned ::after (anchored to that <li>)
+       drifted to the vertical center of the WHOLE expanded block instead of
+       staying on this row. Anchoring position here fixes that. */
+    position: relative !important;
+}
+
+nav .app-nav .main-nav>li>a:hover {
+    background-color: rgba(var(--primary), .1);
+    color: rgba(var(--primary), 1);
+}
+
+nav .app-nav .main-nav>li.active>a {
+    background-color: #12715b !important;
+    color: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li>a svg {
+    height: 18px;
+    width: 18px;
+    stroke-width: 1.5;
+    fill: none;
+    transition: var(--app-transition);
+}
+
+nav .app-nav .main-nav>li>a iconify-icon {
+    transition: var(--app-transition);
+}
+
+nav .app-nav .main-nav>li:hover>a svg,
+nav .app-nav .main-nav>li:hover>a iconify-icon {
+    stroke: rgba(var(--primary), 1);
+    color: rgba(var(--primary), 1);
+}
+
+nav .app-nav .main-nav>li.active>a svg,
+nav .app-nav .main-nav>li.active>a iconify-icon {
+    stroke: #ffffff !important;
+    color: #ffffff !important;
+}
+
+/* Expandable workspace children (Accounting > Payables, HR > Recruitment,
+   etc). Hidden until arjun_theme.js toggles .expanded on click.
+
+   ki_style.css already ships a full generic submenu system for
+   `.main-nav > li:not(.menu-title) ul` (margin, li padding, the
+   left accent bar on ::before, active-state color via --ki-primary) - its
+   selector has higher specificity than a bare .sidebar-child-nav class, so
+   its 1rem ul margin + 0.3rem/1.5rem li padding was stacking on top of ours
+   and misaligning child text against the parent row. Neutralizing it at
+   the same selector weight (compound + !important) and re-driving spacing
+   and color from our own rules below, rather than fighting the cascade. */
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav {
+    display: none;
+    list-style: none !important;
+    margin: 0 0 2px !important;
+    padding: 0 !important;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav.expanded {
+    display: block;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li {
+    padding: 0 !important;
+    font-size: inherit !important;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a::before {
+    display: none !important;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a {
+    border-radius: 5px;
+    color: var(--font-color);
+    display: block;
+    /* 15px clips the longest labels ("Shift & Attendance", "Employee
+       Lifecycle") against this row's ~187px available width (nowrap, no
+       ellipsis) - shrunk to fit the worst case (206px content) with a
+       small margin. !important because ki_style.css has its own rule
+       (.app-wrapper .semi-nav:hover .app-nav .main-nav > li a) that only
+       applies while genuinely hovering a collapsed sidebar, has higher
+       specificity (5 class/pseudo-class selectors vs 4 here) and sets
+       font-size: inherit - which resolved to 14px, clipping again, but
+       only in that one hover state. */
+    font-size: 13px !important;
+    font-weight: 500;
+    margin-bottom: 2px;
+    padding: 6px 10px 6px 1.8rem;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: var(--app-transition);
+    white-space: nowrap;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a:hover {
+    background-color: rgba(var(--primary), .1);
+    color: rgba(var(--primary), 1);
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li.active>a {
+    background-color: #12715b !important;
+    color: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a svg {
+    height: 18px;
+    width: 18px;
+    stroke-width: 1.5;
+    fill: none;
+    --icon-stroke: var(--font-color);
+    stroke: var(--font-color);
+    vertical-align: middle;
+    transition: var(--app-transition);
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a svg use {
+    stroke: var(--font-color);
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a iconify-icon {
+    vertical-align: middle;
+    transition: var(--app-transition);
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a:hover svg {
+    --icon-stroke: rgba(var(--primary), 1);
+    stroke: rgba(var(--primary), 1);
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a:hover svg use {
+    stroke: rgba(var(--primary), 1);
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li.active>a svg,
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li.active>a iconify-icon {
+    --icon-stroke: #ffffff;
+    stroke: #ffffff !important;
+    color: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li.active>a svg use {
+    stroke: #ffffff !important;
+}
+
+/* Icon-only (semi-nav) mode has no room for a nested list - keep it
+   collapsed regardless of expanded state until the sidebar widens back out. */
+nav.vertical-sidebar.semi-nav:not(:hover) .sidebar-child-nav {
+    display: none !important;
+}
+
+/* ki_style.css has its own pre-existing rule for
+   `.main-nav > li:not(.menu-title) > a[aria-expanded="true"]` (solid
+   --ki-primary teal background, white text, larger font, extra margin) -
+   built for a submenu system that was never wired up. Since we now set
+   aria-expanded ourselves for click-to-expand tracking, that rule fired
+   any time an item was expanded, regardless of whether it was the active
+   page - a color change tied to expand state, not navigation. Neutralize
+   it back to the normal resting style; .active (below) still drives the
+   real highlight. */
+nav .app-nav .main-nav>li:not(.menu-title)>a[aria-expanded="true"] {
+    background: transparent !important;
+    color: var(--font-color) !important;
+    margin-bottom: 2px !important;
+    font-size: 15px !important;
+}
+
+/* Responsive container adjustment */
+.page-head {
+    max-width: 100% !important;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Sidebar Toggle and Responsiveness. Scoped to nav.vertical-sidebar (the
+   app's own sidebar) rather than a bare `nav` - other components render
+   their own <nav> elements too (e.g. the date picker's month nav bar,
+   .datepicker--nav), and a bare selector here shoved those off-screen with
+   the same negative margin intended only for the sidebar. */
+@media (min-width: 992px) {
+
+    /* The desktop hide logic is completely removed so the semi-nav class can dictate standard shrinking instead of hiding entirely */
+    body.sidebar-menu-opened nav.vertical-sidebar:not(.semi-nav) {
+        margin-left: calc(-1 * var(--sidebar-width));
+    }
+}
+
+@media (max-width: 991px) {
+    nav.vertical-sidebar {
+        margin-left: calc(-1 * var(--sidebar-width));
+    }
+
+    .app-wrapper .app-content {
+        padding-left: 15px;
+        padding-right: 15px;
+        width: 100%;
+    }
+
+    /* On mobile, sidebar-menu-opened shows the sidebar */
+    body.sidebar-menu-opened nav.vertical-sidebar {
+        margin-left: 0;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* -------------------------------------------------------------------------- */
+/* MODERN WIDGET CARDS - KI-Admin Theme Override                              */
+/* -------------------------------------------------------------------------- */
+
+/* 1. The Card Container */
+.frappe-card,
+.desk-sidebar {
+    background: var(--surface-color) !important;
+    border-radius: var(--radius-lg) !important;
+    border: 1px solid var(--border-color-frappe) !important;
+    box-shadow: var(--box-shadow) !important;
+    transition: var(--transition-fast);
+    margin-bottom: 24px !important;
+}
+
+.widget:hover,
+.frappe-card:hover {
+    box-shadow: var(--hover-shadow) !important;
+}
+
+/* 2. Header Area */
+.widget .widget-head {
+    padding: 14.4px 21.6px !important;
+    background: transparent !important;
+}
+
+.widget .widget-title {
+    font-weight: 600 !important;
+    font-size: 15.3px !important;
+    color: var(--text-primary) !important;
+    letter-spacing: 0;
+    margin: 0 !important;
+    text-transform: capitalize;
+}
+
+.widget .widget-subtitle {
+    display: none !important;
+}
+
+/* 3. The Widget Box Pattern Base */
+.links-widget-box {
+    background-color: var(--surface-color) !important;
+    background-repeat: no-repeat !important;
+    padding: 1.2rem !important;
+    position: relative;
+    overflow: hidden;
+    /* Ensure vector curves don't clip outside rounded corners */
+}
+
+/* 6 Dynamic Overlapping Fluid "Wave" Patterns */
+/* Generates sharp, crisp curved vectors overlapping at bottom right and top-left */
+.ce-block:nth-child(6n+1) .links-widget-box {
+    background-image:
+        radial-gradient(circle at 100% 100%, rgba(77, 182, 172, 0.11) 25%, transparent 25.5%),
+        radial-gradient(ellipse 120% 80% at 85% 110%, rgba(77, 182, 172, 0.07) 40%, transparent 40.5%),
+        radial-gradient(ellipse 80% 100% at 0% 0%, rgba(77, 182, 172, 0.09) 20%, transparent 20.5%),
+        radial-gradient(circle at -5% 5%, rgba(77, 182, 172, 0.06) 30%, transparent 30.5%) !important;
+}
+
+.ce-block:nth-child(6n+2) .links-widget-box {
+    background-image:
+        radial-gradient(circle at 90% 110%, rgba(77, 182, 172, 0.09) 30%, transparent 30.5%),
+        radial-gradient(ellipse 80% 120% at 100% 85%, rgba(77, 182, 172, 0.06) 35%, transparent 35.5%),
+        radial-gradient(circle at 0% 0%, rgba(77, 182, 172, 0.07) 25%, transparent 25.5%),
+        radial-gradient(ellipse 100% 80% at 10% -10%, rgba(77, 182, 172, 0.10) 35%, transparent 35.5%) !important;
+}
+
+.ce-block:nth-child(6n+3) .links-widget-box {
+    background-image:
+        radial-gradient(ellipse 100% 100% at 115% 90%, rgba(77, 182, 172, 0.10) 35%, transparent 35.5%),
+        radial-gradient(ellipse 130% 90% at 75% 115%, rgba(77, 182, 172, 0.07) 45%, transparent 45.5%),
+        radial-gradient(ellipse 90% 110% at -5% -5%, rgba(77, 182, 172, 0.09) 30%, transparent 30.5%),
+        radial-gradient(ellipse 110% 90% at 5% -15%, rgba(77, 182, 172, 0.06) 40%, transparent 40.5%) !important;
+}
+
+.ce-block:nth-child(6n+4) .links-widget-box {
+    background-image:
+        radial-gradient(ellipse 90% 110% at 105% 95%, rgba(77, 182, 172, 0.11) 25%, transparent 25.5%),
+        radial-gradient(circle at 65% 120%, rgba(77, 182, 172, 0.07) 40%, transparent 40.5%),
+        radial-gradient(circle at -10% -10%, rgba(77, 182, 172, 0.11) 35%, transparent 35.5%),
+        radial-gradient(ellipse 80% 120% at 15% -5%, rgba(77, 182, 172, 0.07) 25%, transparent 25.5%) !important;
+}
+
+.ce-block:nth-child(6n+5) .links-widget-box {
+    background-image:
+        radial-gradient(ellipse 110% 120% at 95% 115%, rgba(77, 182, 172, 0.10) 40%, transparent 40.5%),
+        radial-gradient(ellipse 80% 100% at 120% 80%, rgba(77, 182, 172, 0.06) 30%, transparent 30.5%),
+        radial-gradient(ellipse 100% 100% at -15% 10%, rgba(77, 182, 172, 0.10) 20%, transparent 20.5%),
+        radial-gradient(ellipse 120% 80% at 0% -5%, rgba(77, 182, 172, 0.06) 35%, transparent 35.5%) !important;
+}
+
+.ce-block:nth-child(6n+6) .links-widget-box {
+    background-image:
+        radial-gradient(ellipse 120% 100% at 105% 100%, rgba(77, 182, 172, 0.09) 30%, transparent 30.5%),
+        radial-gradient(ellipse 100% 130% at 85% 110%, rgba(77, 182, 172, 0.07) 45%, transparent 45.5%),
+        radial-gradient(circle at 5% -10%, rgba(77, 182, 172, 0.07) 30%, transparent 30.5%),
+        radial-gradient(ellipse 90% 100% at -10% 15%, rgba(77, 182, 172, 0.09) 25%, transparent 25.5%) !important;
+}
+
+/* 4. Button/Link Items (The Rows) inside Links Widget */
+.links-widget-box .link-item {
+    display: flex !important;
+    align-items: center !important;
+    position: relative;
+    padding: 10.8px 14.4px !important;
+    margin: 9px 0 !important;
+    /* Spaced like separate cards */
+    border-radius: 8px !important;
+    color: var(--font-color) !important;
+    font-weight: 500 !important;
+    font-size: 13.5px !important;
+    background: var(--surface-color) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    border-left: 4px solid var(--primary-color) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01) !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    text-decoration: none !important;
+}
+
+/* Faux Soft Rounded Icon is completely removed for cleaner card look */
+.links-widget-box .link-item::before {
+    display: none !important;
+}
+
+/* Hover Effect for Link Cards */
+.links-widget-box .link-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05) !important;
+    border-right-color: rgba(0, 0, 0, 0.02) !important;
+    border-top-color: rgba(0, 0, 0, 0.02) !important;
+    border-bottom-color: rgba(0, 0, 0, 0.02) !important;
+    background: #fdfdfd !important;
+}
+
+/* 4. The Content and Text */
+.links-widget-box .link-content {
+    display: flex !important;
+    align-items: center !important;
+    width: 100%;
+    justify-content: space-between;
+}
+
+/* 5. The Arrow Icon (SVG) */
+.links-widget-box .link-item svg.es-icon {
+    width: 16.2px !important;
+    height: 16.2px !important;
+    background: transparent !important;
+    padding: 0 !important;
+    stroke: var(--font-light-color) !important;
+    fill: none !important;
+    transition: all 0.3s ease;
+}
+
+/* Show Arrow on Hover */
+.links-widget-box .link-item:hover svg.es-icon {
+    stroke: var(--primary-color) !important;
+    transform: translateX(3px);
+}
+
+/* Hide Footer if empty */
+.widget-footer {
+    display: none !important;
+}
+
+
+
+.shortcut-widget-box {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    position: relative;
+    padding: 1.25rem 1.25rem;
+    min-height: 68px;
+    background-color: var(--surface-color) !important;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Unique Modern Element: Expanding accent corner */
+.shortcut-widget-box::before {
+    content: '';
+    position: absolute;
+    right: -24px;
+    top: -24px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    opacity: 0.3;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: -1;
+}
+
+.shortcut-widget-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+}
+
+.shortcut-widget-box:hover::before {
+    transform: scale(3.5);
+    opacity: 0.85;
+}
+
+/* Hover colored variations using parent nth-child */
+.ce-block:nth-child(6n+1) .shortcut-widget-box::before {
+    background-color: #86efac;
+}
+
+.ce-block:nth-child(6n+1) .shortcut-widget-box:hover .widget-control svg.es-icon {
+    stroke: #15803d !important;
+}
+
+.ce-block:nth-child(6n+2) .shortcut-widget-box::before {
+    background-color: #fcd34d;
+}
+
+.ce-block:nth-child(6n+2) .shortcut-widget-box:hover .widget-control svg.es-icon {
+    stroke: #b45309 !important;
+}
+
+.ce-block:nth-child(6n+3) .shortcut-widget-box::before {
+    background-color: #93c5fd;
+}
+
+.ce-block:nth-child(6n+3) .shortcut-widget-box:hover .widget-control svg.es-icon {
+    stroke: #1d4ed8 !important;
+}
+
+.ce-block:nth-child(6n+4) .shortcut-widget-box::before {
+    background-color: #f9a8d4;
+}
+
+.ce-block:nth-child(6n+4) .shortcut-widget-box:hover .widget-control svg.es-icon {
+    stroke: #be185d !important;
+}
+
+.ce-block:nth-child(6n+5) .shortcut-widget-box::before {
+    background-color: #fca5a5;
+}
+
+.ce-block:nth-child(6n+5) .shortcut-widget-box:hover .widget-control svg.es-icon {
+    stroke: #b91c1c !important;
+}
+
+.ce-block:nth-child(6n+6) .shortcut-widget-box::before {
+    background-color: #c4b5fd;
+}
+
+.ce-block:nth-child(6n+6) .shortcut-widget-box:hover .widget-control svg.es-icon {
+    stroke: #6d28d9 !important;
+}
+
+/* Content adjustments */
+.shortcut-widget-box .widget-head {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.shortcut-widget-box .widget-title {
+    font-size: 14.4px !important;
+    font-weight: 500 !important;
+    color: var(--font-color) !important;
+}
+
+.shortcut-widget-box .widget-control svg.es-icon {
+    width: 18px !important;
+    height: 18px !important;
+    stroke: var(--font-light-color) !important;
+    transition: var(--app-transition);
+}
+
+.shortcut-widget-box:hover .widget-control svg.es-icon {
+    transform: translate(2px, -2px);
+}
+
+/* --- OVERRIDE KI-ADMIN MISSING ICONS --- */
+/* The KI-Admin template relies on a "Phosphor-Bold" icon font for the dropdown arrows.
+   Since we don't have this font, we'll swap the ::after pseudo element to use a native SVG chevron.
+
+   Uses a CSS mask (not background-image) so the chevron picks up currentColor
+   dynamically. stroke='currentColor' inside a background-image data URI does
+   NOT inherit the host element's color - that SVG is its own isolated
+   resource and currentColor there resolves to a fixed color at parse time,
+   which is why the arrow looked a different shade than the icon/label next
+   to it. A mask only uses the SVG for shape/alpha; background-color:
+   currentColor supplies the actual, live-updating fill. */
+nav .app-nav .main-nav>li:not(.menu-title)>a::after {
+    content: "" !important;
+    background-image: none !important;
+    background-color: currentColor !important;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+    -webkit-mask-repeat: no-repeat !important;
+    mask-repeat: no-repeat !important;
+    -webkit-mask-position: center !important;
+    mask-position: center !important;
+    -webkit-mask-size: 12px 12px !important;
+    mask-size: 12px 12px !important;
+    width: 16px !important;
+    height: 16px !important;
+    right: 1.25rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) rotate(-90deg) !important;
+    transition: transform 0.2s ease !important;
+}
+
+/* Rotate the SVG natively when the sub-menu is expanded to point downwards */
+nav .app-nav .main-nav>li:not(.menu-title)>a[aria-expanded="true"]::after {
+    transform: translateY(-50%) rotate(0deg) !important;
+}
+
+/* Hide the dropdown arrow entirely when the sidebar is in semi-nav state */
+nav.semi-nav .app-nav .main-nav>li:not(.menu-title)>a::after {
+    display: none !important;
+}
+
+.sidebar-item-icon {
+    width: 18px;
+    height: 18px;
+}
+
+span.sidebar-item-label {
+    margin-left: 4px;
+}
+
+.sidebar-item-icon iconify-icon {
+    font-size: 18px;
+    top: 2px;
+    position: relative;
+}
+
+[data-page-route="Workspaces"] .layout-main .layout-main-section {
+    padding: 0px !important;
+    border: 1px solid transparent !important;
+    background-color: transparent !important;
+}
+
+/* Workspace cards (Explore shortcuts, Social Posts, Reports & Masters
+   groups) are pure white (--surface-color), but the page behind them was
+   only a hair off-white (--bodybg-color, #f6f7fa) - too close in tone for
+   the cards to read as distinct surfaces at a glance. A visibly greyer
+   backdrop, scoped to the Workspace view only (so list/form/report pages
+   keep their existing background untouched), makes the card boundaries
+   obvious without needing extra borders/shadows. */
+[data-page-route="Workspaces"] .layout-main-section-wrapper {
+    background-color: #dde1e8;
+}
+
+.links-widget-box {
+    padding: 10px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--border-color-frappe);
+}
+
+/* -------------------------------------------------------------------------- */
+/* PREMIUM GRADIENT CHART OVERRIDES (SPLINES & DOTTED END)                    */
+/* Scoped to .arjun-single-line-chart (set in arjun_theme.js mutate_charts   */
+/* based on the actual number of rendered line-graph-path elements) so a     */
+/* multi-series chart (e.g. Attendance Count: Absent/Present/Leave) keeps    */
+/* its own per-line colors instead of every line collapsing into this one    */
+/* gradient.                                                                  */
+/* -------------------------------------------------------------------------- */
+
+.frappe-chart.arjun-single-line-chart .line-graph-path {
+    stroke: url(#arjun-gradient) !important;
+    stroke-width: 4.5px !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+
+    /* 
+      CSS Mask Trick: 
+      Layer 1 is solid black for 70% of the chart width, then transparent.
+      Layer 2 is a repeating dotted pattern across the entire width.
+      Composited together, 70% is solid, the last 30% is rendering dots!
+    */
+    -webkit-mask-image:
+        linear-gradient(to right, black 70%, transparent 70.5%),
+        repeating-linear-gradient(to right, black 0px, black 6px, transparent 6px, transparent 14px);
+    mask-image:
+        linear-gradient(to right, black 70%, transparent 70.5%),
+        repeating-linear-gradient(to right, black 0px, black 6px, transparent 6px, transparent 14px);
+}
+
+/* Hide scattered data points per image */
+.frappe-chart .dataset-units circle {
+    display: none !important;
+}
+
+/* Remove default faint fill so line is distinct */
+.frappe-chart path.region-fill {
+    display: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* NUMBER WIDGET CARDS OVERRIDES                                              */
+/* -------------------------------------------------------------------------- */
+
+.number-widget-box {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 21.6px !important;
+    position: relative !important;
+    border-radius: var(--radius-lg) !important;
+    overflow: hidden !important;
+    min-height: 135px !important;
+    transition: var(--transition-fast) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Allow absolute positioning of control without breaking flex flow */
+.number-widget-box .widget-head,
+.number-widget-box .widget-body,
+.number-widget-box .widget-content,
+.number-widget-box .widget-label {
+    display: contents !important;
+}
+
+.number-widget-box .widget-control {
+    position: absolute !important;
+    top: 21.6px !important;
+    right: 21.6px !important;
+    z-index: 10 !important;
+}
+
+/* Fix dropdown menu inside control */
+.number-widget-box .widget-control .dropdown-menu {
+    right: 0 !important;
+    left: auto !important;
+    top: 100% !important;
+}
+
+/* Custom decorative icon area via pseudo-element */
+.number-widget-box::after {
+    content: '' !important;
+    display: block !important;
+    width: 43.2px !important;
+    height: 43.2px !important;
+    border-radius: 50% !important;
+    margin-bottom: 14.4px !important;
+    order: 1 !important;
+    background-size: 21.6px 21.6px !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    z-index: 2 !important;
+}
+
+/* Big Number gets order 2 */
+.number-widget-box .number {
+    order: 2 !important;
+    font-size: 28.8px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 3.6px !important;
+    color: var(--text-primary) !important;
+    z-index: 2 !important;
+}
+
+/* Title goes below Number */
+.number-widget-box .widget-title {
+    order: 3 !important;
+    font-size: 16.2px !important;
+    font-weight: 600 !important;
+    text-transform: capitalize !important;
+    color: var(--text-secondary) !important;
+    z-index: 2 !important;
+}
+
+/* Stats underneath */
+.number-widget-box .card-stats {
+    order: 4 !important;
+    font-size: 10.8px !important;
+    opacity: 0.8 !important;
+    margin-top: 5.4px !important;
+    z-index: 2 !important;
+}
+
+/* Hover lift effect */
+.number-widget-box:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: var(--hover-shadow) !important;
+}
+
+/* --- THEME VARIATIONS --- */
+
+/* Variation 1: Pristine White */
+.number-widget-box[data-color-index="0"] {
+    background-color: #ffffff !important;
+}
+
+.number-widget-box[data-color-index="0"] .number {
+    color: #111827 !important;
+}
+
+.number-widget-box[data-color-index="0"]::after {
+    background-color: var(--primary-color) !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='23 6 13.5 15.5 8.5 10.5 1 18'%3E%3C/polyline%3E%3Cpolyline points='17 6 23 6 23 12'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+.number-widget-box[data-color-index="0"]::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -20px !important;
+    right: -20px !important;
+    width: 100px !important;
+    height: 100px !important;
+    border-radius: 50% !important;
+    background-color: #f4f7f8 !important;
+    z-index: 1 !important;
+}
+
+.number-widget-box[data-color-index="0"] .widget-control svg,
+.number-widget-box[data-color-index="0"] .widget-title span.ellipsis {
+    color: var(--primary-color) !important;
+    fill: var(--primary-color) !important;
+    stroke: var(--primary-color) !important;
+}
+
+/* Variation 2: Green Chart Gradient */
+.number-widget-box[data-color-index="1"] {
+    background: linear-gradient(135deg, #10b981 0%, #73c76b 60%, #d4dda0 100%) !important;
+    border: 0px !important;
+}
+
+.number-widget-box[data-color-index="1"] .widget-title,
+.number-widget-box[data-color-index="1"] .card-stats {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.number-widget-box[data-color-index="1"] .number {
+    color: #ffffff !important;
+}
+
+.number-widget-box[data-color-index="1"] .widget-control svg,
+.number-widget-box[data-color-index="1"] .widget-title span.ellipsis {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+.number-widget-box[data-color-index="1"]::after {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    /* Bar chart / trending icon using white */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3v18h18'/%3E%3Cpath d='M18.7 8l-5.1 5.2-2.8-2.7L7 14.3'/%3E%3C/svg%3E") !important;
+}
+
+.number-widget-box[data-color-index="1"]::before {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -10px !important;
+    right: -10px !important;
+    width: 140px !important;
+    height: 140px !important;
+    border-radius: 50% !important;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 60%) !important;
+    z-index: 1 !important;
+}
+
+
+/* Variation 3: Linear Gradient Light/Dark Teal */
+.number-widget-box[data-color-index="2"] {
+    background: linear-gradient(135deg, #10b981 0%, #0d6b59 100%) !important;
+}
+
+.number-widget-box[data-color-index="2"] .widget-title,
+.number-widget-box[data-color-index="2"] .card-stats {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.number-widget-box[data-color-index="2"] .number {
+    color: #ffffff !important;
+}
+
+.number-widget-box[data-color-index="2"] .widget-control svg,
+.number-widget-box[data-color-index="2"] .widget-title span.ellipsis {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+.number-widget-box[data-color-index="2"]::after {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='22 12 18 12 15 21 9 3 6 12 2 12'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+.number-widget-box[data-color-index="2"]::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    right: -30px !important;
+    width: 150px !important;
+    height: 150px !important;
+    border-radius: 50% !important;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%) !important;
+    transform: translateY(-50%) !important;
+    z-index: 1 !important;
+}
+
+/* Variation 4: Solid Dark Teal */
+.number-widget-box[data-color-index="3"] {
+    background-color: var(--primary-color) !important;
+}
+
+.number-widget-box[data-color-index="3"] .widget-title,
+.number-widget-box[data-color-index="3"] .card-stats {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.number-widget-box[data-color-index="3"] .number {
+    color: #ffffff !important;
+}
+
+.number-widget-box[data-color-index="3"] .widget-control svg,
+.number-widget-box[data-color-index="3"] .widget-title span.ellipsis {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+.number-widget-box[data-color-index="3"]::after {
+    background-color: #ffffff !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f626a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3Cpath d='M9 16l2 2 4-4'/%3E%3C/svg%3E") !important;
+}
+
+.number-widget-box[data-color-index="3"]::before {
+    content: '' !important;
+    position: absolute !important;
+    right: -20px !important;
+    bottom: -20px !important;
+    width: 140px !important;
+    height: 140px !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3Cpath d='M9 16l2 2 4-4'/%3E%3C/svg%3E") !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    opacity: 0.1 !important;
+    z-index: 1 !important;
+}
+
+/* --- FIX FRAPPE FILE UPLOADER CHECKBOXES --- */
+/* Override KI Admin's overly broad `.file-uploader label` selector */
+.file-uploader label.frappe-checkbox {
+    width: auto !important;
+    height: auto !important;
+    font-size: var(--text-sm) !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    border: none !important;
+    background-color: transparent !important;
+    padding-top: 0.25rem !important;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+/* Style the native checkbox to match the theme color */
+.file-uploader label.frappe-checkbox input[type="checkbox"] {
+    accent-color: var(--primary-color) !important;
+    width: 16px !important;
+    height: 16px !important;
+    cursor: pointer;
+    margin: 0 !important;
+}
+
+/* --- FIX FRAPPE HEADER BUTTON SIZES --- */
+/* Ensure text buttons and icon buttons in the header have the exact same height */
+.page-head .btn-sm,
+.page-head .btn {
+    height: 32px !important;
+    justify-content: center !important;
+}
+
+/* Grid row editor: delete button (ki_style breaks var(--danger) for Frappe) */
+body.arjun-theme-active .enhanced-grid-container .grid-row-open .form-in-grid .grid-header-toolbar .row-actions .btn.grid-delete-row {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4px 8px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    color: #fff !important;
+    background-color: #e14e5a !important;
+    border-color: #e14e5a !important;
+}
+
+body.arjun-theme-active .enhanced-grid-container .grid-row-open .form-in-grid .grid-header-toolbar .row-actions .btn.grid-delete-row .icon {
+    width: 16px !important;
+    height: 16px !important;
+    --icon-stroke: #fff;
+    stroke: #fff;
+}
+
+body.arjun-theme-active .enhanced-grid-container .grid-row-open .form-in-grid .grid-header-toolbar .row-actions .btn.grid-delete-row .icon use {
+    stroke: #fff !important;
+}
+/* ==========================================================================
+   NAVY WORKSPACE SIDEBAR — matches the karm.omone.in reference palette
+   ========================================================================== */
+nav.vertical-sidebar {
+    background: linear-gradient(180deg, #10225F 0%, #172E7A 58.17%, #0B1843 100%) !important;
+}
+
+nav.vertical-sidebar .app-logo {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+nav .app-nav .menu-title span {
+    color: #838fb9 !important;
+}
+
+nav .app-nav .main-nav>li>a,
+nav .app-nav .main-nav>li:not(.menu-title)>a {
+    color: #8EA1E0 !important;
+}
+
+nav .app-nav .main-nav>li>a svg {
+    --icon-stroke: #8EA1E0;
+    stroke: #8EA1E0 !important;
+}
+
+nav .app-nav .main-nav>li>a svg use {
+    stroke: #8EA1E0 !important;
+}
+
+nav .app-nav .main-nav>li>a iconify-icon {
+    color: #8EA1E0 !important;
+}
+
+nav .app-nav .main-nav>li>a:hover {
+    background-color: #1e3a8a !important;
+    color: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li:hover>a svg,
+nav .app-nav .main-nav>li:hover>a iconify-icon {
+    --icon-stroke: #ffffff;
+    stroke: #ffffff !important;
+    color: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li:hover>a svg use {
+    stroke: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li.active>a {
+    background-color: #1C3CA3 !important;
+    color: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li.active>a svg,
+nav .app-nav .main-nav>li.active>a iconify-icon {
+    --icon-stroke: #ffffff;
+    stroke: #ffffff !important;
+    color: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li.active>a svg use {
+    stroke: #ffffff !important;
+}
+
+/* Same ki_style.css [aria-expanded="true"] neutralization as the base
+   theme, restated here so the navy resting text color wins instead of the
+   base theme's --font-color. */
+nav .app-nav .main-nav>li:not(.menu-title)>a[aria-expanded="true"] {
+    background: transparent !important;
+    color: #8EA1E0 !important;
+}
+
+nav .app-nav .main-nav>li.active>a[aria-expanded="true"] {
+    background-color: #1C3CA3 !important;
+    color: #ffffff !important;
+}
+
+/* Same compound-selector specificity as the base theme's equivalent rules
+   (see the alignment fix above) - a bare .sidebar-child-nav class here
+   loses the specificity tie-break against the base theme's higher-specificity
+   selector, regardless of which comes later in the file. */
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a {
+    color: #8EA1E0 !important;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a:hover {
+    background-color: #1e3a8a !important;
+    color: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li.active>a {
+    background-color: #1C3CA3 !important;
+    color: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a svg,
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a svg use {
+    --icon-stroke: #8EA1E0;
+    stroke: #8EA1E0 !important;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a:hover svg,
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a:hover svg use {
+    --icon-stroke: #ffffff;
+    stroke: #ffffff !important;
+}
+
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li.active>a svg,
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li.active>a svg use {
+    --icon-stroke: #ffffff;
+    stroke: #ffffff !important;
+}
+
+/* ==========================================================================
+   SEMI-NAV (icon-only) FIX — the theme's built-in semi-nav text-hiding
+   assumes labels are wrapped in their own element; Frappe's actual sidebar
+   markup is a raw text node next to the icon, so it never got hidden.
+   font-size:0 collapses the text node to nothing while the icon (which
+   uses explicit px width/height, not em) stays fully visible.
+   ========================================================================== */
+nav.vertical-sidebar.semi-nav:not(:hover) .app-nav .menu-title span {
+    font-size: 0 !important;
+}
+
+nav.vertical-sidebar.semi-nav:not(:hover) .app-nav .main-nav>li:not(.menu-title)>a {
+    font-size: 0 !important;
+    justify-content: center;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+nav.vertical-sidebar.semi-nav:not(:hover) .app-nav .main-nav>li:not(.menu-title)>a::after {
+    display: none !important;
+}
+
+nav.vertical-sidebar.semi-nav:not(:hover) .app-nav .main-nav>li:not(.menu-title)>a svg {
+    margin: 0 !important;
+}
+
+.arjun-hrms-greeting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 0 0 20px;
+    padding: 28px 32px;
+    border-radius: 12px;
+    background: linear-gradient(120deg, #16264f, #2d2f6e 55%, #4a3d8f);
+    overflow: hidden;
+}
+
+.arjun-hrms-greeting h2 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #ffffff;
+}
+
+.arjun-hrms-greeting-date {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #c8cdf0;
+}
+
+/* Explore (left) / Social Posts (right), side by side - built by
+   setup_explore_social_split() in arjun_theme.js, which physically moves
+   Explore's own heading+cards into .arjun-split-left; "Reports & Masters"
+   and everything after it is untouched, still directly below this row in
+   normal document flow. */
+.arjun-explore-social-split { display: flex; gap: 28px; align-items: flex-start; margin-bottom: 4px; }
+/* Explore gets the bigger half, Social Posts the smaller - calc()
+   accounts for the parent's 28px gap so the two still sum to exactly
+   100% instead of overflowing it. */
+.arjun-split-left { flex: 0 0 calc(62% - 14px); max-width: calc(62% - 14px); min-width: 0; }
+.arjun-split-right { flex: 0 0 calc(38% - 14px); max-width: calc(38% - 14px); min-width: 0; }
+/* Both columns sat directly on the page background with nothing marking
+   where one section ends and the next begins - a light panel behind each
+   (heading included) makes "Explore" and "Social Posts" read as distinct
+   sections. Social Posts also gets an explicit border on top of that,
+   since .arjun-social-card's own white box inside it would otherwise blend
+   into a same-toned panel with no visible edge. */
+.arjun-split-left, .arjun-split-right {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 20px;
+}
+.arjun-split-right {
+    border: 1px solid #e2e8f0;
+}
+/* Explore's cards rely on Bootstrap-style col-* classes for their grid,
+   which only lay out correctly inside a flex-wrap row - the same display
+   the blocks originally had as direct children of .codex-editor__redactor
+   (confirmed via getComputedStyle in devtools), replicated here since
+   they're no longer inside that container. */
+.arjun-split-left { display: flex; flex-wrap: wrap; }
+/* Bootstrap's col-lg-3/col-md-4 classes are viewport-breakpoint-based, not
+   aware of their actual parent's width - at a wide viewport they still
+   claim 25%/33% flex-basis even though .arjun-split-left is now narrower
+   than the full page, so cards kept trying to cram 3-4 per row into less
+   room than they need, clipping badges and text. Force a clean 2-per-row
+   instead, sized for what this column actually has. */
+.arjun-split-left > .ce-block:has(.shortcut-widget-box) {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+}
+/* Scaled up from the stock 68px/14.4px/18px so 4 rows of 2 cards actually
+   fill this wider column's height instead of leaving empty space above
+   "Reports & Masters" - only inside the split's left half, the Explore
+   cards everywhere else (workspaces without this split) are untouched. */
+.arjun-split-left .shortcut-widget-box { min-height: 108px !important; padding: 1.7rem 1.5rem !important; }
+.arjun-split-left .shortcut-widget-box .widget-title { font-size: 16.5px !important; }
+.arjun-split-left .shortcut-widget-box .widget-control svg.es-icon { width: 22px !important; height: 22px !important; }
+@media (max-width: 900px) {
+    .arjun-explore-social-split { flex-direction: column; }
+    .arjun-split-left, .arjun-split-right { flex: 1 1 100%; max-width: 100%; }
+}
+
+/* Section heading above the widget, matching the same visual weight
+   Frappe's own workspace section headings ("Explore", "Reports & Masters")
+   use (.ce-header .h4 -> get_textstyle("xl", "semibold") in desktop.scss)
+   so this reads as a first-class section of the page, not a stray card. */
+.arjun-social-heading {
+    /* Matched to "Explore"'s own rendered heading (17.1px/700/#082f32 -
+       an editorjs header block's bare <b>, not a fixed design-system
+       size), not an approximation, so this reads as the exact same
+       section-heading style rather than close-but-different. */
+    font-size: 17.1px;
+    font-weight: 700;
+    color: #082f32;
+    /* The "Explore" heading sits inside an editor.js block that carries its
+       own top/bottom spacing (ce-block padding), which this bare <h4> next
+       to it doesn't have - so without compensating, "Social Posts" and its
+       composer card start a few pixels higher than "Explore" and its first
+       card. Top/bottom margin measured against the live "Explore" block
+       (getBoundingClientRect diff) so both column headings - and the row
+       right below them - line up at the same y instead of just being close. */
+    margin: 7px 0 14px;
+}
+
+/* Social feed widget (Hrms Home, above Explore) - composer + latest-3
+   preview of /social-feed, injected by arjun_theme.js right after the
+   greeting banner. Colors match the softened palette already used across
+   ess_dashboard/admin_dashboard (see their :root tokens). */
+.arjun-social-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    margin: 0 0 20px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.08);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+    animation: arjun-social-card-in 0.35s ease both;
+}
+/* The card's own height stays fixed (composer + a bounded amount of feed)
+   instead of growing however tall a post with several images happens to
+   be - the composer itself is left out of this (not wrapped in the
+   scrolling box) since the emoji popover needs to escape any overflow
+   clipping on its container, same reasoning as the composer's own
+   overflow:visible further down. */
+#arjun-social-posts-region {
+    max-height: 460px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+.arjun-social-card:has(.arjun-social-composer-row:focus-within) {
+    border-color: #c7cdf5;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px -12px rgba(100, 109, 196, 0.28);
+}
+@keyframes arjun-social-card-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.arjun-social-composer-row {
+    display: flex;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: border-color 0.25s ease;
+}
+.arjun-social-composer-row:focus-within { border-bottom-color: #dfe3fa; }
+.arjun-social-avatar {
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+    background: #eef2ff;
+    color: #646dc4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 3px #eef2ff;
+}
+.arjun-social-composer-main { flex: 1; min-width: 0; position: relative; }
+/* Pure trigger now, not an editable field - clicking it (or either tool
+   icon, or Post) opens the real compose dialog, see
+   .arjun-social-compose-dialog below. */
+.arjun-social-composer-trigger {
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #94a3b8;
+    min-height: 40px;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+.arjun-social-composer-trigger:hover { color: #64748b; }
+.arjun-social-preview-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 8px; }
+.arjun-social-preview {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    animation: arjun-social-pop-in 0.2s ease both;
+}
+.arjun-social-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; display: block; }
+@keyframes arjun-social-pop-in {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}
+.arjun-social-preview-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.65);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    font-size: 15px;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.arjun-social-preview-remove:hover { background: #c0596a; transform: scale(1.08); }
+.arjun-social-composer-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+.arjun-social-tools { display: flex; align-items: center; gap: 2px; }
+.arjun-social-tool-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #646dc4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.arjun-social-tool-btn svg { width: 17px; height: 17px; }
+.arjun-social-tool-btn:hover { background: #eef2ff; transform: scale(1.08); }
+.arjun-social-tool-btn:active { transform: scale(0.94); }
+.arjun-social-tool-btn:disabled { color: #cbd5e1; cursor: not-allowed; }
+.arjun-social-tool-btn:disabled:hover { background: none; transform: none; }
+.arjun-social-post-btn {
+    padding: 7px 20px;
+    border-radius: 999px;
+    border: none;
+    background: #3b5bdb;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.arjun-social-post-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px -6px rgba(59, 91, 219, 0.5); }
+.arjun-social-post-btn:active:not(:disabled) { transform: translateY(0) scale(0.97); }
+.arjun-social-post-btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
+.arjun-social-hint { font-size: 11.5px; color: #64748b; margin-top: 4px; }
+
+.arjun-social-emoji-pop {
+    position: absolute;
+    z-index: 20;
+    top: 36px;
+    left: 0;
+    width: 240px;
+    max-height: 180px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.25);
+    padding: 6px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    transform-origin: top left;
+    animation: arjun-social-pop-open 0.15s ease both;
+}
+@keyframes arjun-social-pop-open {
+    from { opacity: 0; transform: scale(0.9) translateY(-4px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.arjun-social-emoji-pop button {
+    border: none;
+    background: none;
+    font-size: 18px;
+    padding: 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.12s ease, transform 0.12s ease;
+}
+.arjun-social-emoji-pop button:hover { background: #f1f5f9; transform: scale(1.15); }
+
+.arjun-social-posts-label {
+    margin-top: 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1f5f9;
+}
+.arjun-social-posts { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
+.arjun-social-post {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 9px 8px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.arjun-social-post:hover { background: #f8fafc; transform: translateX(2px); }
+/* Announcement posts get a soft amber wash instead of just a badge, so
+   they read as visually distinct in the feed at a glance, not just on
+   close reading - regular posts immediately above/below stay unstyled,
+   so the feed still flows as one continuous list, per the "then below
+   post continues" request. */
+.arjun-social-post.is-announcement {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+}
+.arjun-social-post.is-announcement:hover { background: #fef3c7; }
+.arjun-social-announcement-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 999px;
+    padding: 2px 10px;
+    margin-bottom: 6px;
+}
+.arjun-social-subtopic-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4338ca;
+    background: #eef2ff;
+    border-radius: 999px;
+    padding: 2px 10px;
+    margin-bottom: 6px;
+    margin-right: 6px;
+}
+.arjun-social-post-body { flex: 1; min-width: 0; }
+.arjun-social-post-head { display: flex; align-items: baseline; gap: 6px; font-size: 13px; margin-bottom: 4px; }
+.arjun-social-post-head b { color: #0f172a; font-size: 13.5px; }
+.arjun-social-post-head span { color: #94a3b8; font-size: 11.5px; }
+/* Full post content now (not a 2-line clamp + tiny 48px thumbnail) -
+   this preview shows the whole post, same as the full /social-feed page.
+   Name+timestamp and the post body were sitting right on top of each
+   other (3px gap, same line-height, similar dark color) and read as one
+   merged block rather than two - a clear gap plus a slightly lighter/
+   looser body makes the split obvious at a glance. */
+.arjun-social-post-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #475569;
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px solid #eef1f5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+/* Content is now rich HTML from the compose dialog's Text Editor field
+   (paragraphs/lists/etc, not raw text) - browser default block spacing on
+   these tags is huge next to a compact 13.5px post, so it's flattened
+   back down to read as one continuous block like a plain post would. */
+.arjun-social-post-text p,
+.arjun-social-post-text ol,
+.arjun-social-post-text ul,
+.arjun-social-post-text blockquote,
+.arjun-social-post-text h1,
+.arjun-social-post-text h2,
+.arjun-social-post-text h3,
+.arjun-social-post-text h4,
+.arjun-social-post-text h5,
+.arjun-social-post-text h6 { margin: 0 0 6px; }
+.arjun-social-post-text > :last-child { margin-bottom: 0; }
+.arjun-social-post-text ol, .arjun-social-post-text ul { padding-left: 1.4em; }
+.arjun-social-post-text a { color: #3b5bdb; }
+.arjun-social-post-text img { max-width: 100%; border-radius: 8px; }
+.arjun-social-post-actions {
+    display: flex; align-items: center; gap: 4px;
+    margin-top: 10px; padding-top: 8px; border-top: 1px solid #f1f5f9;
+}
+.arjun-social-meta-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #94a3b8;
+}
+.arjun-social-meta-stat svg { width: 13px; height: 13px; }
+/* The like/comment stats are real <button>s now (liking works, and
+   comments expand, right from this preview) - reset them back to looking
+   like plain text stats, then layer their own hover/liked states on top. */
+.arjun-social-like-btn, .arjun-social-comment-btn {
+    border: none;
+    background: none;
+    padding: 5px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.arjun-social-comment-btn:hover { background: #eef2ff; color: #646dc4; }
+/* Instagram's own like-heart red, not the app's softened rose - a like
+   button reads as a very specific, recognizable convention and a muted
+   tone undersells the "you liked this" feedback. */
+.arjun-social-like-btn:hover { background: #fff0f1; color: #ff3040; transform: scale(1.06); }
+.arjun-social-like-btn:active { transform: scale(0.94); }
+.arjun-social-like-btn.liked { color: #ff3040; }
+.arjun-social-like-btn.liked svg { fill: #ff3040; }
+.arjun-social-empty { text-align: center; padding: 14px; color: #94a3b8; font-size: 13px; }
+
+/* Same Twitter-style image grid as the full feed's .sf-post-images. */
+.arjun-social-post-images { margin-top: 10px; border-radius: 10px; overflow: hidden; display: grid; gap: 3px; }
+.arjun-social-post-images img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.arjun-social-post-images-1 { grid-template-columns: 1fr; }
+.arjun-social-post-images-1 img { max-height: 340px; }
+.arjun-social-post-images-2 { grid-template-columns: 1fr 1fr; }
+.arjun-social-post-images-2 img { height: 200px; }
+.arjun-social-post-images-3 { grid-template-columns: 1.2fr 1fr; grid-template-rows: 1fr 1fr; }
+.arjun-social-post-images-3 img:first-child { grid-row: 1 / 3; height: 100%; }
+.arjun-social-post-images-3 img { height: 99.5px; }
+.arjun-social-post-images-4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.arjun-social-post-images-4 img { height: 140px; }
+
+/* Attachment chips as real links here (vs. the composer's version above,
+   which has a remove button instead of an Open pill). */
+.arjun-social-attachment-chip-link {
+    cursor: pointer; text-decoration: none; color: inherit;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.arjun-social-attachment-chip-link:hover { background: #f1f5f9; transform: translateX(2px); }
+.arjun-social-attachment-open {
+    flex-shrink: 0; font-size: 11px; font-weight: 700; color: #646dc4;
+    padding: 4px 10px; border-radius: 999px; background: #eef2ff;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+.arjun-social-attachment-chip-link:hover .arjun-social-attachment-open { background: #646dc4; color: #fff; }
+
+/* Inline comment thread - same bubble pattern as the full feed's
+   .sf-comment*, sized down slightly for the compact widget. */
+.arjun-social-comments { margin-top: 10px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
+.arjun-social-comment { display: flex; gap: 8px; margin-bottom: 8px; }
+.arjun-social-comment-bubble { flex: 1; min-width: 0; background: #f1f5f9; border-radius: 12px; padding: 7px 11px; }
+.arjun-social-comment-author { font-size: 12px; font-weight: 700; color: #0f172a; }
+.arjun-social-comment-text { font-size: 12.5px; color: #334155; margin-top: 1px; white-space: pre-wrap; word-wrap: break-word; }
+.arjun-social-comment-delete {
+    align-self: flex-start; flex-shrink: 0; border: none; background: none; cursor: pointer;
+    color: #94a3b8; font-size: 15px; line-height: 1; padding: 3px; border-radius: 6px;
+}
+.arjun-social-comment-delete:hover { background: #f1f5f9; color: #ff3040; }
+.arjun-social-comment-form { display: flex; gap: 8px; }
+.arjun-social-comment-input {
+    flex: 1; min-width: 0; border: 1px solid #e2e8f0; border-radius: 999px; padding: 7px 12px;
+    font-size: 12.5px; font-family: inherit; outline: none; transition: border-color 0.15s ease;
+}
+.arjun-social-comment-input:focus { border-color: #c7cdf5; }
+.arjun-social-comment-send {
+    flex-shrink: 0; border: none; background: #646dc4; color: #fff; border-radius: 999px;
+    padding: 0 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+}
+
+/* Non-image attachments (PDF, Excel, Word, ...) in the composer - a
+   clickable-looking file chip rather than a thumbnail, since there's
+   nothing to preview. */
+.arjun-social-attachment-list { display: flex; flex-direction: column; gap: 6px; margin: 4px 0 8px; }
+.arjun-social-attachment-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+.arjun-social-attachment-icon { font-size: 18px; flex-shrink: 0; line-height: 1; }
+.arjun-social-attachment-info { flex: 1; min-width: 0; }
+.arjun-social-attachment-name { font-size: 12.5px; font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.arjun-social-attachment-size { font-size: 11px; color: #64748b; margin-top: 1px; }
+.arjun-social-attachment-chip .arjun-social-preview-remove { position: static; flex-shrink: 0; }
+
+.arjun-social-view-all {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 10px;
+    background: #f8fafc;
+    color: #3b5bdb;
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+.arjun-social-view-all svg { width: 15px; height: 15px; transition: transform 0.2s ease; }
+.arjun-social-view-all:hover { background: #eef2ff; color: #3b5bdb; }
+.arjun-social-view-all:hover svg { transform: translateX(3px); }
+
+/* Compose dialog (frappe.ui.Dialog) - subtopic + announcement + the Text
+   Editor's own formatting toolbar + image/attachment upload, opened by
+   clicking the composer trigger above. Just widens the stock dialog and
+   gives the reused preview-grid/attachment-chip/emoji-pop pieces (same
+   classes/styles as the widget's old inline composer) a bit of breathing
+   room above the dialog's own footer buttons. */
+.arjun-social-compose-dialog .modal-dialog { max-width: 640px; }
+.arjun-social-compose-dialog .ql-editor { min-height: 140px; font-size: 14px; }
+.arjun-social-compose-dialog #arjun-compose-upload-region { margin-top: 10px; position: relative; }
+.arjun-social-compose-dialog .arjun-compose-dialog-tools { margin-top: 8px; }
+.arjun-social-compose-dialog .checkbox { margin-bottom: 0; }
+
+/* Collapse/expand toggle for each report/master card group, injected by
+   arjun_theme.js on the Hrms Home workspace only. Sits in front of the
+   heading text (not after), so margin is on the right, not the left. */
+.arjun-collapse-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    margin-right: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, background-color 0.15s ease;
+}
+
+.arjun-collapse-toggle:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.arjun-collapse-toggle.arjun-collapsed {
+    transform: rotate(-90deg);
+}
+
+/* Sub-heading inserted above each row of 3 report/master cards, e.g.
+   "Settings, Employee & Key Reports" - the whole row (not just the arrow)
+   is clickable to collapse/expand that group. */
+.arjun-group-heading {
+    margin: 20px 0 4px;
+}
+
+.arjun-group-heading-row {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.arjun-group-heading-text {
+    /* Matches the "Reports & Masters" heading's text color. */
+    color: rgb(8, 47, 50);
+    font-size: var(--text-lg);
+    font-weight: 600;
+}
+
+/* Without this, the report/master cards render fully expanded first and
+   only collapse into their groups once arjun_theme.js finishes (which
+   waits for Frappe's cards to actually finish loading, then debounces) -
+   a visible flash from expanded to collapsed on every load. Hide them
+   until that's done instead. #arjun-hrms-greeting only exists on Hrms
+   Home (injected by the same script), so :has() scopes this hiding to
+   that workspace only - every other workspace's cards render normally,
+   unaffected. */
+body:has(#arjun-hrms-greeting):not(.arjun-groups-ready) .editor-js-container .widget.links-widget-box {
+    visibility: hidden;
+}
+
+/* Same reasoning, extended to the Explore/Social Posts split: without
+   this, the page briefly shows Explore in its original full-width,
+   4-per-row layout (with no Social Posts alongside it, since that widget
+   only gets built once the split's right column exists) and then visibly
+   reflows into the two-column layout once arjun_theme.js's debounced
+   setup_explore_social_split() finishes. Hiding the *entire* redactor -
+   not just the cards, like the rule above - means nothing in that region
+   renders in an intermediate state at all; it all appears at once, fully
+   formed, exactly like the rule above already does for card grouping. */
+body:has(#arjun-hrms-greeting):not(.arjun-groups-ready) .editor-js-container .codex-editor__redactor {
+    visibility: hidden;
+}
+
+/* Global page-transition loader - shown on every route change anywhere in
+   the app (sidebar clicks, breadcrumbs, browser back/forward), not just
+   Hrms Home's own slow-render window below. Toggled by arjun_theme.js's
+   show_page_loader()/hide_page_loader() via the .arjun-page-loading class
+   on <body>. Covers the full viewport (not measured off one page's own
+   content area, since it has to work identically on every page type)
+   and reuses the exact same "walking boxes" box/keyframes CSS as the
+   Hrms Home loader just below (.arjun-hrms-home-loader-box etc.) - only
+   the outer wrapper differs. */
+.arjun-page-loader {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    background: var(--np-bg, #f9fafb);
+}
+body.arjun-page-loading .arjun-page-loader {
+    display: flex;
+}
+.arjun-page-loader p {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink-600, #64748b);
+    letter-spacing: 0.01em;
+}
+
+/* Big animated loader shown over that same hidden area (setup_hrms_home_
+   loader() in arjun_theme.js) - same gradient as the greeting banner
+   above it, so the wait reads as "loading", not blank/frozen. Positioned
+   over .editor-js-container itself (a sibling of .codex-editor__redactor,
+   not hidden by the rule above), sized to fill whatever space the
+   redactor already occupies while invisible. Hidden again the instant
+   .arjun-groups-ready lands, same trigger as everything above. */
+.arjun-hrms-home-loader {
+    display: none;
+    /* fixed, not absolute inside the growing/scrolling content area -
+       left/top/width/height are set inline by
+       arjun_theme._position_hrms_home_loader() from
+       .layout-main-section-wrapper's own (stable) box, so this sits still
+       instead of drifting as hidden content grows in behind it. */
+    position: fixed;
+    z-index: 1000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    background: var(--np-bg, #f9fafb);
+}
+body:has(#arjun-hrms-greeting):not(.arjun-groups-ready) .arjun-hrms-home-loader {
+    display: flex;
+}
+/* "Walking boxes" loader - each box flips end-over-end along the line
+   while its color cycles, hand-expanded from the SCSS @for-loop version
+   (nth-child/@for aren't valid plain CSS) into one explicit rule/keyframe
+   per box. Palette is the greeting banner's own navy-to-violet gradient
+   instead of the original's light blue, so it reads as this app's loader
+   rather than a generic one. */
+.arjun-hrms-home-loader-boxes {
+    --duration: 1.5s;
+    --container-size: 220px;
+    --box-size: 30px;
+    --box-border-radius: 15%;
+    width: var(--container-size);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+.arjun-hrms-home-loader-box {
+    width: var(--box-size);
+    height: var(--box-size);
+    position: relative;
+    display: block;
+    transform-origin: -50% center;
+    border-radius: var(--box-border-radius);
+}
+.arjun-hrms-home-loader-box::after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: var(--box-border-radius);
+    box-shadow: 0 0 10px 0 rgba(74, 61, 143, 0.4);
+}
+.arjun-hrms-home-loader-box:nth-child(1) {
+    animation: arjun-hrms-home-loader-slide var(--duration) ease-in-out infinite alternate;
+}
+.arjun-hrms-home-loader-box:nth-child(1)::after {
+    background-color: #16264f;
+    animation: arjun-hrms-home-loader-color-change var(--duration) ease-in-out infinite alternate;
+}
+.arjun-hrms-home-loader-box:nth-child(2) { animation: arjun-hrms-home-loader-flip-1 var(--duration) ease-in-out infinite alternate; }
+.arjun-hrms-home-loader-box:nth-child(2)::after { background-color: #22335f; animation: arjun-hrms-home-loader-squidge-1 var(--duration) ease-in-out infinite alternate; }
+.arjun-hrms-home-loader-box:nth-child(3) { animation: arjun-hrms-home-loader-flip-2 var(--duration) ease-in-out infinite alternate; }
+.arjun-hrms-home-loader-box:nth-child(3)::after { background-color: #2d2f6e; animation: arjun-hrms-home-loader-squidge-2 var(--duration) ease-in-out infinite alternate; }
+.arjun-hrms-home-loader-box:nth-child(4) { animation: arjun-hrms-home-loader-flip-3 var(--duration) ease-in-out infinite alternate; }
+.arjun-hrms-home-loader-box:nth-child(4)::after { background-color: #3a3888; animation: arjun-hrms-home-loader-squidge-3 var(--duration) ease-in-out infinite alternate; }
+.arjun-hrms-home-loader-box:nth-child(5) { animation: arjun-hrms-home-loader-flip-4 var(--duration) ease-in-out infinite alternate; }
+.arjun-hrms-home-loader-box:nth-child(5)::after { background-color: #4a3d8f; animation: arjun-hrms-home-loader-squidge-4 var(--duration) ease-in-out infinite alternate; }
+
+.arjun-hrms-home-loader p {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink-600, #64748b);
+    letter-spacing: 0.01em;
+}
+
+@keyframes arjun-hrms-home-loader-slide {
+    0% { background-color: #16264f; transform: translatex(0vw); }
+    100% { background-color: #4a3d8f; transform: translatex(calc(var(--container-size) - (var(--box-size) * 1.25))); }
+}
+@keyframes arjun-hrms-home-loader-color-change {
+    0% { background-color: #16264f; }
+    100% { background-color: #4a3d8f; }
+}
+
+@keyframes arjun-hrms-home-loader-flip-1 { 0%, 15% { transform: rotate(0); } 35%, 100% { transform: rotate(-180deg); } }
+@keyframes arjun-hrms-home-loader-flip-2 { 0%, 30% { transform: rotate(0); } 50%, 100% { transform: rotate(-180deg); } }
+@keyframes arjun-hrms-home-loader-flip-3 { 0%, 45% { transform: rotate(0); } 65%, 100% { transform: rotate(-180deg); } }
+@keyframes arjun-hrms-home-loader-flip-4 { 0%, 60% { transform: rotate(0); } 80%, 100% { transform: rotate(-180deg); } }
+
+@keyframes arjun-hrms-home-loader-squidge-1 {
+    5% { transform-origin: center bottom; transform: scalex(1) scaley(1); }
+    15% { transform-origin: center bottom; transform: scalex(1.3) scaley(0.7); }
+    20%, 25% { transform-origin: center bottom; transform: scalex(0.8) scaley(1.4); }
+    55%, 100% { transform-origin: center top; transform: scalex(1) scaley(1); }
+    40% { transform-origin: center top; transform: scalex(1.3) scaley(0.7); }
+}
+@keyframes arjun-hrms-home-loader-squidge-2 {
+    20% { transform-origin: center bottom; transform: scalex(1) scaley(1); }
+    30% { transform-origin: center bottom; transform: scalex(1.3) scaley(0.7); }
+    35%, 40% { transform-origin: center bottom; transform: scalex(0.8) scaley(1.4); }
+    70%, 100% { transform-origin: center top; transform: scalex(1) scaley(1); }
+    55% { transform-origin: center top; transform: scalex(1.3) scaley(0.7); }
+}
+@keyframes arjun-hrms-home-loader-squidge-3 {
+    35% { transform-origin: center bottom; transform: scalex(1) scaley(1); }
+    45% { transform-origin: center bottom; transform: scalex(1.3) scaley(0.7); }
+    50%, 55% { transform-origin: center bottom; transform: scalex(0.8) scaley(1.4); }
+    85%, 100% { transform-origin: center top; transform: scalex(1) scaley(1); }
+    70% { transform-origin: center top; transform: scalex(1.3) scaley(0.7); }
+}
+@keyframes arjun-hrms-home-loader-squidge-4 {
+    50% { transform-origin: center bottom; transform: scalex(1) scaley(1); }
+    60% { transform-origin: center bottom; transform: scalex(1.3) scaley(0.7); }
+    65%, 70% { transform-origin: center bottom; transform: scalex(0.8) scaley(1.4); }
+    100% { transform-origin: center top; transform: scalex(1) scaley(1); }
+    85% { transform-origin: center top; transform: scalex(1.3) scaley(0.7); }
+}
+
+/* The "Share with" dialog's user column (frappe/form/templates/set_sharing.html)
+   renders the user's email as one unbroken string with no wrap/break rule.
+   Long addresses (e.g. dhankharmayank11@gmail.com) overflow past the
+   col-xs-4's 33% width and visually sit on top of the Can Read/Write/Submit/
+   Share checkboxes next to it, since floated columns don't get pushed by an
+   overflowing sibling. Forcing the text to wrap inside its own column keeps
+   it clear of the checkboxes. */
+.shared-user .col-xs-4 {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
+}
+
+/* Plain-HTML replacement legend for the stock "Shift Assignment Breakup"
+   pie chart (see arjun_theme.js mutate_charts - the built-in SVG legend is
+   hidden there and this is built from the same chart instance's data).
+   Normal flex wrap instead of frappe-charts' fixed 150px SVG columns, so
+   long Shift Type labels never overlap. */
+.arjun-shift-breakup-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 20px;
+    padding: 10px 4px 2px;
+}
+.arjun-shift-breakup-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-700, #333);
+    white-space: nowrap;
+}
+.arjun-shift-breakup-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: inline-block;
+}
+.arjun-shift-breakup-legend-value {
+    color: var(--text-muted, #888);
+    font-weight: 400;
+}
+
+/* ==========================================================================
+   SIDEBAR PREMIUM POLISH — a pure animation/interaction layer on top of the
+   navy workspace sidebar above (NAVY WORKSPACE SIDEBAR block). Every rule
+   here only touches color transitions, transforms, and pseudo-elements -
+   nothing here adds, removes, or renames a class that arjun_theme.js's
+   click/expand/active-route logic depends on, so none of that JS needed to
+   change. Reuses the same navy/white palette already established above
+   instead of introducing new brand colors.
+   ========================================================================== */
+
+nav.vertical-sidebar {
+    --sidebar-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --sidebar-glow: rgba(94, 138, 255, 0.35);
+    /* Soft edge shadow so the sidebar reads as a raised panel instead of a
+       flat color block butting up against the page content. */
+    box-shadow: 4px 0 24px rgba(6, 12, 40, 0.18);
+}
+
+/* Slim, on-theme scrollbar for the workspace list, and native smooth
+   scrolling for keyboard/anchor jumps - the browser default scrollbar
+   (light grey) looked out of place against the dark navy panel. */
+nav .app-nav {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(142, 161, 224, 0.35) transparent;
+}
+nav .app-nav::-webkit-scrollbar {
+    width: 6px;
+}
+nav .app-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+nav .app-nav::-webkit-scrollbar-thumb {
+    background-color: rgba(142, 161, 224, 0.35);
+    border-radius: 999px;
+}
+nav .app-nav::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(142, 161, 224, 0.55);
+}
+
+/* Quiet hover affordance on the logo tile, since it's a real link back to
+   /app and previously gave no feedback at all. */
+nav.vertical-sidebar .app-logo .logo {
+    transition: filter 0.25s var(--sidebar-ease);
+}
+nav.vertical-sidebar .app-logo .logo:hover {
+    filter: brightness(1.18);
+}
+
+/* Row micro-interaction: replace the flat "all 0.3s ease" transition (still
+   used site-wide elsewhere) with a considered easing curve, and add a
+   quiet rightward nudge + icon scale on hover instead of a color swap alone. */
+nav .app-nav .main-nav>li:not(.menu-title)>a {
+    transition: background-color 0.22s var(--sidebar-ease), color 0.22s var(--sidebar-ease),
+        transform 0.22s var(--sidebar-ease), box-shadow 0.22s var(--sidebar-ease);
+}
+nav .app-nav .main-nav>li:not(.menu-title)>a:hover {
+    transform: translateX(3px);
+}
+nav .app-nav .main-nav>li:not(.menu-title)>a svg,
+nav .app-nav .main-nav>li:not(.menu-title)>a iconify-icon {
+    transition: transform 0.22s var(--sidebar-ease), stroke 0.22s var(--sidebar-ease),
+        color 0.22s var(--sidebar-ease);
+}
+nav .app-nav .main-nav>li:not(.menu-title)>a:hover svg,
+nav .app-nav .main-nav>li:not(.menu-title)>a:hover iconify-icon {
+    transform: scale(1.12);
+}
+/* Collapsed (semi-nav) rail: the translateX nudge above would push the icon
+   half out of the narrow rail, since there's no label text left to absorb
+   the shift - keep the scale, drop the shift, in that state only. */
+nav.vertical-sidebar.semi-nav:not(:hover) .app-nav .main-nav>li:not(.menu-title)>a:hover {
+    transform: none;
+}
+
+/* Active state: a soft glow plus a slim white indicator rail that eases in
+   from the left, instead of the flat fill color switch alone doing all the
+   work of showing "you are here". */
+nav .app-nav .main-nav>li.active>a {
+    box-shadow: 0 4px 14px var(--sidebar-glow), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+nav .app-nav .main-nav>li:not(.menu-title)>a::before {
+    content: "";
+    position: absolute;
+    /* Sits in the <li>'s own 0.5rem side padding, just outside the pill
+       itself, so it reads as a rail against the sidebar's edge rather than
+       a bar cutting into the icon/label. */
+    left: -0.5rem;
+    top: 18%;
+    bottom: 18%;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: #ffffff;
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.25s var(--sidebar-ease);
+}
+nav .app-nav .main-nav>li.active>a::before {
+    transform: scaleY(1);
+}
+/* No room for a rail sitting outside the icon-only rail itself - hide it
+   in collapsed (semi-nav) mode, same condition every other collapsed-state
+   rule in the NAVY WORKSPACE SIDEBAR block above uses. */
+nav.vertical-sidebar.semi-nav:not(:hover) .app-nav .main-nav>li:not(.menu-title)>a::before {
+    display: none;
+}
+
+/* Child workspace list (Accounting > Payables, etc): was an instant
+   display:none/block snap - same selectors as the base theme's rule above,
+   appended later so it wins the cascade tie without needing !important,
+   swapped for a height+fade transition. arjun_theme.js still only ever
+   toggles the .expanded class; nothing about how it decides to do so
+   changes. 480px comfortably covers every workspace's longest child list
+   (HR/Payroll, ~8 rows) without the reveal noticeably waiting to "catch up"
+   for shorter ones, at this transition's speed. */
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav {
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s var(--sidebar-ease), opacity 0.2s var(--sidebar-ease);
+}
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav.expanded {
+    max-height: 480px;
+    opacity: 1;
+}
+
+/* Child row micro-interaction, matching the parent row's rightward nudge. */
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a:hover {
+    transform: translateX(3px);
+}
+nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li.active>a {
+    box-shadow: 0 3px 10px var(--sidebar-glow);
+}
+
+/* Entrance: a quiet staggered fade+slide for the workspace list on first
+   paint (full page load only - this sidebar is server-rendered once into
+   the app shell and persists across in-app route changes, it does not
+   re-render per navigation, so this never replays while clicking around).
+   Kept short and subtle per the brief - one considered moment, not a
+   per-interaction effect. */
+@keyframes arjun-sidebar-item-in {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+nav .app-nav .main-nav>li {
+    animation: arjun-sidebar-item-in 0.36s var(--sidebar-ease) both;
+}
+nav .app-nav .main-nav>li:nth-child(1) { animation-delay: 0.02s; }
+nav .app-nav .main-nav>li:nth-child(2) { animation-delay: 0.05s; }
+nav .app-nav .main-nav>li:nth-child(3) { animation-delay: 0.08s; }
+nav .app-nav .main-nav>li:nth-child(4) { animation-delay: 0.11s; }
+nav .app-nav .main-nav>li:nth-child(5) { animation-delay: 0.14s; }
+nav .app-nav .main-nav>li:nth-child(6) { animation-delay: 0.17s; }
+nav .app-nav .main-nav>li:nth-child(7) { animation-delay: 0.20s; }
+nav .app-nav .main-nav>li:nth-child(8) { animation-delay: 0.23s; }
+nav .app-nav .main-nav>li:nth-child(9) { animation-delay: 0.26s; }
+nav .app-nav .main-nav>li:nth-child(10) { animation-delay: 0.29s; }
+nav .app-nav .main-nav>li:nth-child(11) { animation-delay: 0.32s; }
+nav .app-nav .main-nav>li:nth-child(12) { animation-delay: 0.35s; }
+nav .app-nav .main-nav>li:nth-child(13) { animation-delay: 0.38s; }
+nav .app-nav .main-nav>li:nth-child(14) { animation-delay: 0.41s; }
+
+/* Keyboard focus: ki_style.css/Frappe don't give these rows a visible
+   focus ring at all, only the mouse-hover/active states above - a dark
+   navy panel with no focus indicator is invisible to keyboard navigation. */
+nav .app-nav .main-nav>li:not(.menu-title)>a:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.65);
+    outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    nav .app-nav .main-nav>li {
+        animation: none;
+    }
+    nav .app-nav .main-nav>li:not(.menu-title)>a,
+    nav .app-nav .main-nav>li:not(.menu-title)>a svg,
+    nav .app-nav .main-nav>li:not(.menu-title)>a iconify-icon,
+    nav .app-nav .main-nav>li:not(.menu-title)>a::before,
+    nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav,
+    nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a,
+    nav.vertical-sidebar .app-logo .logo {
+        transition: none;
+    }
+    nav .app-nav .main-nav>li:not(.menu-title)>a:hover,
+    nav .app-nav .main-nav>li:not(.menu-title)>a:hover svg,
+    nav .app-nav .main-nav>li:not(.menu-title)>a:hover iconify-icon,
+    nav .app-nav .main-nav>li:not(.menu-title) ul.sidebar-child-nav>li>a:hover {
+        transform: none;
+    }
+}
